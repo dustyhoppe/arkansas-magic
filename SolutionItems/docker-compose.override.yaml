@@ -1,0 +1,13 @@
+version: "3.7"
+services:
+
+  arkansas_magic_mysql:
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password123!
+      - MYSQL_USER=arkansasmagic
+      - MYSQL_PASSWORD=arkansasmagic
+      - MYSQL_DATABASE=arkansasmagic
+    volumes:
+      - B:\\docker\\arkansasmagic\\mysql-data:/var/lib/mysql

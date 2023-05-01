@@ -1,0 +1,9 @@
+version: '3.9'
+
+services:
+
+  arkansas_magic_mysql:
+    image: mysql:8.0.25
+    container_name: arkansas_magic_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always

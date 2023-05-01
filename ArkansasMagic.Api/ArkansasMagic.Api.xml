@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>ArkansasMagic.Api</name>
+    </assembly>
+    <members>
+        <member name="T:ArkansasMagic.Api.Controllers.HealthController">
+            <summary>
+            Health Check controller
+            </summary>
+        </member>
+        <member name="M:ArkansasMagic.Api.Controllers.HealthController.Check">
+            <summary>
+            Health Check
+            </summary>
+            <remarks>
+            Acts as a service level health check returning 200 in the event the service is healthy.
+            </remarks>
+        </member>
+    </members>
+</doc>

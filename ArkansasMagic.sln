@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Api", "ArkansasMagic.Api\ArkansasMagic.Api.csproj", "{30F3E2CA-3BB8-45FF-9DC5-A7CE94A2BC87}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Core", "ArkansasMagic.Core\ArkansasMagic.Core.csproj", "{428287A3-DCE3-4390-8667-2FF6EA15FA13}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Domain", "ArkansasMagic.Domain\ArkansasMagic.Domain.csproj", "{FE9B5142-950B-4271-B87F-DD7B4B70EFEE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Infrastructure", "ArkansasMagic.Infrastructure\ArkansasMagic.Infrastructure.csproj", "{95C0CF1A-C09A-487C-9745-CC36AD8FF199}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Contracts", "ArkansasMagic.Contracts\ArkansasMagic.Contracts.csproj", "{A724455F-F398-4B5C-B26D-9AB3BD026981}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{90BAC39E-60DD-417C-BA8C-8BDBF40C6146}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArkansasMagic.Api.Tests", "ArkansasMagic.Api.Tests\ArkansasMagic.Api.Tests.csproj", "{8D2ED019-8F56-4963-9EC8-BBBC29784787}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{B5CEAE7A-24A4-40B4-9629-CC38EA8B831C}"
+	ProjectSection(SolutionItems) = preProject
+		SolutionItems\docker-compose.override.yaml = SolutionItems\docker-compose.override.yaml
+		SolutionItems\docker-compose.yaml = SolutionItems\docker-compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{30F3E2CA-3BB8-45FF-9DC5-A7CE94A2BC87}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30F3E2CA-3BB8-45FF-9DC5-A7CE94A2BC87}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30F3E2CA-3BB8-45FF-9DC5-A7CE94A2BC87}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30F3E2CA-3BB8-45FF-9DC5-A7CE94A2BC87}.Release|Any CPU.Build.0 = Release|Any CPU
+		{428287A3-DCE3-4390-8667-2FF6EA15FA13}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{428287A3-DCE3-4390-8667-2FF6EA15FA13}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{428287A3-DCE3-4390-8667-2FF6EA15FA13}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{428287A3-DCE3-4390-8667-2FF6EA15FA13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE9B5142-950B-4271-B87F-DD7B4B70EFEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9B5142-950B-4271-B87F-DD7B4B70EFEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE9B5142-950B-4271-B87F-DD7B4B70EFEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE9B5142-950B-4271-B87F-DD7B4B70EFEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95C0CF1A-C09A-487C-9745-CC36AD8FF199}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95C0CF1A-C09A-487C-9745-CC36AD8FF199}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95C0CF1A-C09A-487C-9745-CC36AD8FF199}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95C0CF1A-C09A-487C-9745-CC36AD8FF199}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A724455F-F398-4B5C-B26D-9AB3BD026981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A724455F-F398-4B5C-B26D-9AB3BD026981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A724455F-F398-4B5C-B26D-9AB3BD026981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A724455F-F398-4B5C-B26D-9AB3BD026981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D2ED019-8F56-4963-9EC8-BBBC29784787}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2ED019-8F56-4963-9EC8-BBBC29784787}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2ED019-8F56-4963-9EC8-BBBC29784787}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2ED019-8F56-4963-9EC8-BBBC29784787}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8D2ED019-8F56-4963-9EC8-BBBC29784787} = {90BAC39E-60DD-417C-BA8C-8BDBF40C6146}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3F34FF9D-D934-4854-BA01-1CC76A1A8331}
+	EndGlobalSection
+EndGlobal
