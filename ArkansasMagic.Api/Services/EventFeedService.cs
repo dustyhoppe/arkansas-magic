@@ -39,7 +39,7 @@ namespace ArkansasMagic.Api.Services
                 Latitude = _options.CurrentValue.Coordinates.Latitude,
                 Longitude = _options.CurrentValue.Coordinates.Longitude,
                 IsPremium = false,
-                MaxMeters = _options.CurrentValue.Coordinates.MaxMeters
+                MaxMeters = ConvertMilesToMeters(_options.CurrentValue.MaximumMiles)
             };
         }
 
@@ -208,5 +208,12 @@ namespace ArkansasMagic.Api.Services
                 Tag = _searchQuery.Tag,
             };
         }
+
+        public static int ConvertMilesToMeters(int miles)
+        {
+            const double metersPerMile = 1609.344;
+            return (int)(miles * metersPerMile);
+        }
+
     }
 }
