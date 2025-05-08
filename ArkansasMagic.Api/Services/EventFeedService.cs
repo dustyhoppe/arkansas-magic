@@ -1,4 +1,5 @@
-﻿using ArkansasMagic.Core.Alerts;
+﻿using ArkansasMagic.Api.Configuration;
+using ArkansasMagic.Core.Alerts;
 using ArkansasMagic.Core.Alerts.Types;
 using ArkansasMagic.Core.Data;
 using ArkansasMagic.Core.Wizards;
@@ -8,8 +9,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,20 +23,23 @@ namespace ArkansasMagic.Api.Services
         private readonly ILogger<EventFeedService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly EventSearchQuery _searchQuery;
+        private readonly IOptionsMonitor<EventFiltersOptions> _options;
 
         private const string DiscordDeliveryEndpoint = "https://discord.com/api/webhooks/1102620473600266301/dQVFwu6shViPAnNxa4mxu58xpXpexXA1USugEXabnWhwb3FnlmfNZfQDPJZ856RFwr0h";
 
         public EventFeedService(ILogger<EventFeedService> logger
-            , IServiceProvider serviceProvider)
+            , IServiceProvider serviceProvider
+            , IOptionsMonitor<EventFiltersOptions> options)
         {
             _logger = logger;
             _serviceProvider = serviceProvider;
+            _options = options;
             _searchQuery = new EventSearchQuery
             {
-                Latitude = 35.20105m,
-                Longitude = -91.8318334m,
+                Latitude = _options.CurrentValue.Coordinates.Latitude,
+                Longitude = _options.CurrentValue.Coordinates.Longitude,
                 IsPremium = false,
-                MaxMeters = 300000
+                MaxMeters = _options.CurrentValue.Coordinates.MaxMeters
             };
         }
 
@@ -64,7 +70,7 @@ namespace ArkansasMagic.Api.Services
                     using var dbContext = scope.ServiceProvider.GetService<IApplicationDbContext>();
                     using var wizardsClient = scope.ServiceProvider.GetService<IWizardsApiClient>();
                     var discord = scope.ServiceProvider.GetRequiredService<IDeliveryProvider>();
-                    
+
                     var clock = scope.ServiceProvider.GetService<ISystemClock>();
 
                     var timestamp = clock.UtcNow();
@@ -115,10 +121,9 @@ namespace ArkansasMagic.Api.Services
                             dbEvent.Status = @event.Status;
                             dbEvent.UpdatedDateUtc = timestamp;
 
-                            if (createEvent && dbEvent.Name.Contains("RCQ"))
+                            if (createEvent && dbEvent.Name.Contains("RCQ", StringComparison.OrdinalIgnoreCase))
                             {
-                                var organization = await dbContext.Organizations
-                                    .SingleOrDefaultAsync(o => o.Id == dbEvent.OrganizationId, cancellationToken: cancellationToken);
+                                var organization = await GetOrganizationAsync(dbContext, wizardsClient, dbEvent.OrganizationId, cancellationToken);
 
                                 var alert = new RcqAddedAlert(DiscordDeliveryEndpoint, dbEvent, organization);
                                 await discord.AlertAsync(alert, cancellationToken);
@@ -138,6 +143,53 @@ namespace ArkansasMagic.Api.Services
 
                 await Task.Delay(TimeSpan.FromMinutes(15), cancellationToken);
             }
+        }
+
+        private static async Task<Core.Entities.Organization> GetOrganizationAsync(IApplicationDbContext dbContext, IWizardsApiClient wizardsClient
+            , int organizationId, CancellationToken cancellationToken)
+        {
+            var organization = await dbContext.Organizations
+                                    .SingleOrDefaultAsync(o => o.Id == organizationId, cancellationToken: cancellationToken);
+            if (organization != null)
+                return organization;
+
+            var apiOrganization = await wizardsClient.GetOrganizationAsync(organizationId, cancellationToken);
+            if (apiOrganization != null)
+            {
+                var timestamp = DateTime.UtcNow;
+
+                var dbOrganization = new Core.Entities.Organization
+                {
+                    Id = organizationId,
+                    CreatedDateUtc = timestamp,
+                };
+                await dbContext.Organizations.AddAsync(dbOrganization, cancellationToken);
+
+                dbOrganization.AcceptedTermsAt = apiOrganization.AcceptedTermsAt;
+                dbOrganization.Address = apiOrganization.Address;
+                dbOrganization.Brands = string.Join("|", apiOrganization.Brands?.Select(b => b.Name) ?? new System.Collections.Generic.List<string>());
+                dbOrganization.City = apiOrganization.City;
+                dbOrganization.Country = apiOrganization.Country;
+                dbOrganization.EmailAddress = apiOrganization.EmailAddress ?? "UNKNOWN";
+                dbOrganization.IsPremium = apiOrganization.IsPremium;
+                dbOrganization.IsTestStore = apiOrganization.IsTestStore;
+                dbOrganization.Latitude = apiOrganization.Latitude;
+                dbOrganization.Longitude = apiOrganization.Longitude;
+                dbOrganization.Name = apiOrganization.Name;
+                dbOrganization.PhoneNumber = apiOrganization.PhoneNumber;
+                dbOrganization.PhoneNumbers = string.Join("|", apiOrganization.PhoneNumbers ?? new System.Collections.Generic.List<string>());
+                dbOrganization.PostalAddress = apiOrganization.PostalAddress;
+                dbOrganization.PostalCode = apiOrganization.PostalCode;
+                dbOrganization.ShowEmailInSel = apiOrganization.ShowEmailInSel;
+                dbOrganization.State = apiOrganization.State;
+                dbOrganization.UpdatedDateUtc = timestamp;
+                dbOrganization.Website = apiOrganization.Website;
+                dbOrganization.Websites = string.Join("|", apiOrganization.Websites ?? new System.Collections.Generic.List<string>());
+
+                return dbOrganization;
+            }
+
+            return null;
         }
 
         private EventSearchQuery GetEventSearchQuery(int page)

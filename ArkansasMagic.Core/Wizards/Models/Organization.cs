@@ -37,7 +37,7 @@ namespace ArkansasMagic.Core.Wizards.Models
         public List<string> Websites { get; set; }
 
         [JsonPropertyName("brands")]
-        public List<string> Brands { get; set; }
+        public List<Brand> Brands { get; set; }
 
         [JsonPropertyName("postalAddress")]
         public string PostalAddress { get; set; }

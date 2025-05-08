@@ -1,15 +1,16 @@
+using ArkansasMagic.Api.Configuration;
+using ArkansasMagic.Api.Services;
+using ArkansasMagic.Core;
+using ArkansasMagic.Domain;
+using ArkansasMagic.Domain.Inf;
+using ArkansasMagic.Infrastructure;
+using ArkansasMagic.Infrastructure.Data;
+using ArkansasMagic.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ArkansasMagic.Core;
-using ArkansasMagic.Domain;
-using ArkansasMagic.Domain.Inf;
-using ArkansasMagic.Infrastructure;
-using ArkansasMagic.Infrastructure.Middleware;
-using ArkansasMagic.Api.Services;
-using ArkansasMagic.Infrastructure.Data;
 
 namespace ArkansasMagic.Api
 {
@@ -38,6 +39,8 @@ namespace ArkansasMagic.Api
 
             services.AddHostedService<EventFeedService>();
             services.AddHostedService<OrganizationService>();
+
+            services.Configure<EventFiltersOptions>(Configuration.GetSection(EventFiltersOptions.Key));
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -45,8 +48,9 @@ namespace ArkansasMagic.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.EnsureMigration();
             }
+
+            app.EnsureMigration();
 
             app.UseRouting();
             app.UseCors(options =>

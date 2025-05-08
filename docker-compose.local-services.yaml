@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+
+  api:
+    container_name: api
+    depends_on:
+      arkansas_magic_mysql:
+        condition: service_healthy
+    build: 
+      context: .
+      dockerfile: ./ArkansasMagic.Api/Dockerfile 
+    ports:
+      - "5555:5555"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=LocalDocker

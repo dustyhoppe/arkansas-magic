@@ -17,6 +17,8 @@ namespace ArkansasMagic.Infrastructure
             var databaseConfiguration = configuration.BindSection<DatabaseConfiguration>("Database");
             var version = new MySqlServerVersion(new Version(8, 0, 25));
 
+            Console.WriteLine($"Connection String: {databaseConfiguration.ConnectionString}");
+
             services.AddDbContext<IApplicationDbContext, ApplicationDbContext>(options =>
             {
                 options.UseMySql(databaseConfiguration.ConnectionString, version)

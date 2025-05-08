@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+
+  arkansas_magic_mysql:
+    image: mysql:8.0.25
+    container_name: arkansas_magic_mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - "3309:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password123!
+      - MYSQL_USER=arkansasmagic
+      - MYSQL_PASSWORD=arkansasmagic
+      - MYSQL_DATABASE=arkansasmagic
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-parkansasmagic"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  mysql_data:
