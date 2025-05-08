@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,13 +26,14 @@ namespace ArkansasMagic.Core.Wizards
 
         public async Task<Organization> GetOrganizationAsync(int id, CancellationToken cancellationToken = default)
         {
-            var url = $"/ogre-battledriver/Organizations/by-ids?ids={id}";
-            var (response, organizations) = await _client.GetAsJsonWithResponseAsync<List<Organization>>(url, cancellationToken);
-
+            var url = $"/event-reservations-service/Organizations/by-ids?ids={id}";
+            var response = await _client.GetAsync(url, cancellationToken);
             if (!response.IsSuccessStatusCode)
             {
                 return default;
             }
+
+            var organizations = await response.Content.ReadFromJsonAsync<List<Organization>>();
 
             return organizations.FirstOrDefault();
         }

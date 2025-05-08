@@ -6,6 +6,7 @@ using ArkansasMagic.Core.Authorization;
 using ArkansasMagic.Core.Validation;
 using ArkansasMagic.Domain.Inf;
 using ArkansasMagic.Core.Wizards;
+using ArkansasMagic.Core.Alerts;
 
 namespace ArkansasMagic.Core
 {
@@ -20,6 +21,8 @@ namespace ArkansasMagic.Core
             services.AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
             services.AddScoped<IWizardsApiClient, WizardsApiClient>();
+
+            services.AddSingleton<IDeliveryProvider, DiscordDeliveryProvider>();
         }
     }
 }

@@ -83,7 +83,7 @@ namespace ArkansasMagic.Api.Services
                             dbOrganization.Brands = string.Join("|", organization.Brands ?? new System.Collections.Generic.List<string>());
                             dbOrganization.City = organization.City;
                             dbOrganization.Country = organization.Country;
-                            dbOrganization.EmailAddress = organization.EmailAddress;
+                            dbOrganization.EmailAddress = organization.EmailAddress ?? "UNKNOWN";
                             dbOrganization.IsPremium = organization.IsPremium;
                             dbOrganization.IsTestStore = organization.IsTestStore;
                             dbOrganization.Latitude = organization.Latitude;

@@ -1,4 +1,6 @@
-﻿using ArkansasMagic.Core.Data;
+﻿using ArkansasMagic.Core.Alerts;
+using ArkansasMagic.Core.Alerts.Types;
+using ArkansasMagic.Core.Data;
 using ArkansasMagic.Core.Wizards;
 using ArkansasMagic.Core.Wizards.Models;
 using ArkansasMagic.Domain.Clock;
@@ -18,6 +20,8 @@ namespace ArkansasMagic.Api.Services
         private readonly ILogger<EventFeedService> _logger;
         private readonly IServiceProvider _serviceProvider;
         private readonly EventSearchQuery _searchQuery;
+
+        private const string DiscordDeliveryEndpoint = "https://discord.com/api/webhooks/1102620473600266301/dQVFwu6shViPAnNxa4mxu58xpXpexXA1USugEXabnWhwb3FnlmfNZfQDPJZ856RFwr0h";
 
         public EventFeedService(ILogger<EventFeedService> logger
             , IServiceProvider serviceProvider)
@@ -59,6 +63,7 @@ namespace ArkansasMagic.Api.Services
                 {
                     using var dbContext = scope.ServiceProvider.GetService<IApplicationDbContext>();
                     using var wizardsClient = scope.ServiceProvider.GetService<IWizardsApiClient>();
+                    var discord = scope.ServiceProvider.GetRequiredService<IDeliveryProvider>();
                     
                     var clock = scope.ServiceProvider.GetService<ISystemClock>();
 
@@ -76,6 +81,8 @@ namespace ArkansasMagic.Api.Services
 
                             var dbEvent = await dbContext.Events
                                 .SingleOrDefaultAsync(e => e.Id == @event.Id, cancellationToken: cancellationToken);
+
+                            var createEvent = false;
                             if (dbEvent == null)
                             {
                                 dbEvent = new Core.Entities.Event()
@@ -84,6 +91,7 @@ namespace ArkansasMagic.Api.Services
                                     CreatedDateUtc = timestamp,
                                 };
                                 await dbContext.Events.AddAsync(dbEvent, cancellationToken);
+                                createEvent = true;
                             }
 
                             dbEvent.Cost = @event.Cost;
@@ -106,6 +114,15 @@ namespace ArkansasMagic.Api.Services
                             dbEvent.StartTime = @event.StartTime;
                             dbEvent.Status = @event.Status;
                             dbEvent.UpdatedDateUtc = timestamp;
+
+                            if (createEvent && dbEvent.Name.Contains("RCQ"))
+                            {
+                                var organization = await dbContext.Organizations
+                                    .SingleOrDefaultAsync(o => o.Id == dbEvent.OrganizationId, cancellationToken: cancellationToken);
+
+                                var alert = new RcqAddedAlert(DiscordDeliveryEndpoint, dbEvent, organization);
+                                await discord.AlertAsync(alert, cancellationToken);
+                            }
                         }
 
                         await Task.Delay(TimeSpan.FromSeconds(5), cancellationToken);
@@ -119,7 +136,7 @@ namespace ArkansasMagic.Api.Services
                     _logger.LogError(e, "Failure running Event Feed execution loop.");
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(5), cancellationToken);
+                await Task.Delay(TimeSpan.FromMinutes(15), cancellationToken);
             }
         }
 
